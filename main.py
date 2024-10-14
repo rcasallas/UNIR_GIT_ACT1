@@ -1,49 +1,49 @@
-"""
-License: Apache
-Organization: UNIR
-"""
-
 import os
 import sys
+import argparse
 
 DEFAULT_FILENAME = "words.txt"
 DEFAULT_DUPLICATES = False
 
-
 def sort_list(items, ascending=True):
+    """Ordena una lista en orden ascendente o descendente."""
     if not isinstance(items, list):
-        raise RuntimeError(f"No puede ordenar {type(items)}")
+        raise RuntimeError(f"No se puede ordenar {type(items)}")
 
     return sorted(items, reverse=(not ascending))
 
-
 def remove_duplicates_from_list(items):
+    """Elimina los duplicados de una lista."""
     return list(set(items))
 
+def read_words_from_file(filename):
+    """Lee las palabras de un archivo. Si el archivo no existe, devuelve una lista predeterminada."""
+    if not os.path.isfile(filename):
+        print(f"El archivo {filename} no existe, usando palabras predeterminadas.")
+        return ["ravenclaw", "gryffindor", "slytherin", "hufflepuff"]
 
-if __name__ == "__main__":
-    filename = DEFAULT_FILENAME
-    remove_duplicates = DEFAULT_DUPLICATES
-    if len(sys.argv) == 3:
-        filename = sys.argv[1]
-        remove_duplicates = sys.argv[2].lower() == "yes"
-    else:
-        print("Se debe indicar el fichero como primer argumento")
-        print("El segundo argumento indica si se quieren eliminar duplicados")
-        sys.exit(1)
+    with open(filename, "r") as file:
+        return [line.strip() for line in file if line.strip()]  # Evita agregar líneas vacías
 
-    print(f"Se leerán las palabras del fichero {filename}")
-    file_path = os.path.join(".", filename)
-    if os.path.isfile(file_path):
-        word_list = []
-        with open(file_path, "r") as file:
-            for line in file:
-                word_list.append(line.strip())
-    else:
-        print(f"El fichero {filename} no existe")
-        word_list = ["ravenclaw", "gryffindor", "slytherin", "hufflepuff"]
+def main():
+    parser = argparse.ArgumentParser(description="Procesa un archivo de palabras.")
+    parser.add_argument("filename", nargs="?", default=DEFAULT_FILENAME, help="El archivo que contiene las palabras")
+    parser.add_argument("remove_duplicates", nargs="?", default="no", choices=["yes", "no"],
+                        help="Indica si se deben eliminar duplicados ('yes' o 'no')")
+    
+    args = parser.parse_args()
 
-    if remove_duplicates:
+    # Leer las palabras del archivo o lista predeterminada
+    word_list = read_words_from_file(args.filename)
+
+    # Eliminar duplicados si el argumento lo indica
+    if args.remove_duplicates.lower() == "yes":
         word_list = remove_duplicates_from_list(word_list)
 
-    print(sort_list(word_list))
+    # Ordenar la lista en orden ascendente
+    sorted_words = sort_list(word_list)
+    
+    print(sorted_words)
+
+if __name__ == "__main__":
+    main()
