@@ -13,5 +13,9 @@ python3 main.py <filename> <dup>
   dup: **yes|no**, yes para eliminar palabras duplicadas, no para mantener la lista
 
 
+
+### SE AÑADE FUNCIONALIDAD - DAVID GALLEGO
+
 ## CAMBIO DEL ADMINISTRADOR:
 Esta implementación se usará para mejorar la disponibilidad de la documentación del portal.
+
